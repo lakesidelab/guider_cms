@@ -1,0 +1,51 @@
+<h1><%= @article.title %></h1>
+
+<% if @article.header_image.attached?  %>
+  <%= image_tag(main_app.url_for(@article.header_image), width: "100%") %>
+<% end %>
+
+<%= @article.body %>
+
+<br/>
+<% if current_user && current_user.id == @article.author_id %>
+  <%= link_to 'Edit', edit_content_path(@article.id, root: @root, selected_category: @selected_category) %> |
+<% end %>
+
+<% if current_user && current_user.id == @article.author_id %>
+  <%= link_to 'Delete', article_path(@article.id), method: :delete %> |
+<% end %>
+
+<% if request.original_url.include?('your_articles')  %>
+  <%= link_to "Back", user_articles_path %>
+<% else %>
+  <%= link_to 'Back', contents_path(root: @root, selected_category: @selected_category) %>
+<% end %>
+
+<br/>
+<br/>
+
+<%  if @selected_category_class.articles.length > 1 %>
+<h3>More related Articles</h3>
+<div class="row">
+  <% @selected_category_class.articles.each do |article| %>
+  <% if article.title != @article.title %>
+  <div class="col-xs-12 col-sm-4 col-md-4">
+  <div class="grid-style">
+    <div class="container">
+      <% if article.header_image.attached?  %>
+      <%= image_tag(main_app.url_for(article.header_image), width: "100%") %>
+      <% else %>
+      <% if article.body.embeds.find{|embeds| embeds.image?} %>
+      <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), width: "100%") %>
+      <% end %>
+      <% end %>
+      <br /><br />
+      <h5><%= article.title %></h5>
+      <p><%= article.description %></p>
+    </div>
+  </div>
+  </div>
+  <% end %>
+  <% end %>
+</div>
+<% end %>

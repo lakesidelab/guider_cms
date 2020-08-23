@@ -1,0 +1,84 @@
+<h1>Articles</h1>
+<%
+  def draw_tree(node)
+    node.children.each do |category|
+%>
+
+<% if category.articles != [] %>
+<% if category.classification == @selected_category_class.classification %>
+<li><%= link_to "#{category.classification}", contents_path(root: @root,  selected_category: category.classification), class: "listing-active-links" %></li>
+<% else %>
+<li><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.classification), class: "listing-links" %></li>
+
+<% end %>
+<% end %>
+<%
+          if category.children.any?
+%>
+              <ul style="list-style-type: none;"><% draw_tree(category) %></ul>
+<%
+          end
+%>
+
+<%
+    end; nil
+  end
+%>
+<div class="row">
+  <div class="col-sm-3 col-md-3" >
+    <% @children_category.each do |category| %>
+    <% if category.articles != [] %>
+    <% if category.classification == @selected_category_class.classification %>
+      <h5><%= link_to "#{category.classification}", contents_path(root: @root,  selected_category: category.classification), class: "listing-active-links" %></h5>
+    <% else %>
+    <h5><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.classification), class: "listing-links" %></h5>
+    <% end %>
+    <% if category.children.any? %>
+        <ul style="list-style-type: none;"><%= draw_tree(category) %></ul>
+    <% end %>
+    <% end %>
+    <% end %>
+    <br/>
+    <% if @current_user %>
+    <h5><%= link_to "New Content", new_content_path(root: @root), class: "essesntial-links" %></h5>
+    <h5><%= link_to "Your Content Here", user_articles_path, class: "essesntial-links" %></h5>
+    <h5><%= link_to "New Category", new_optimized_category_path, class: "essesntial-links" %></h5>
+    <h5><%= link_to "New Subcategory", new_subcategory_path(root: @root), class: "essesntial-links" %></h5>
+    <h5><%= link_to "Show categories", root_categories_path, class: "essesntial-links" %></h5>
+    <h5><%= link_to "Back", main_app.root_path, class: "essesntial-links" %></h5>
+    <% end %>
+  </div>
+  <div class="col-sm-9 col-md-9">
+    <% if @root_category.children.first.articles == [] %>
+      <center>
+        <h1>No Content Here</h1>
+        <% if @current_user && @is_guider_admin %>
+          <h3>Click on New Acticle to create Content</h3>
+        <% end %>
+      </center>
+    <% else %>
+    <div class="row">
+      <% @selected_category_class.articles.each do |article| %>
+      <div class="col-xs-12 col-sm-4 col-md-4">
+        <%= link_to content_path(article, root: @root, selected_category: @selected_category_class.classification), class: "grid-link" do %>
+        <div class="grid-style">
+          <div class="container">
+            <% if article.header_image.attached?  %>
+            <%= image_tag(main_app.url_for(article.header_image), width: "100%") %>
+            <% else %>
+            <% if article.body.embeds.find{|embeds| embeds.image?} %>
+            <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), width: "100%") %>
+            <% end %>
+            <% end %>
+            <br /><br />
+            <h5><%= article.title %></h5>
+            <p><%= article.description[0..200].gsub(/\s\w+$/,'...') %></p>
+          </div>
+        </div>
+        <% end  %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+    <% end %>

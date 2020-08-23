@@ -1,0 +1,10 @@
+one:
+  name: test
+  email: test@mail.com
+  password: password
+
+two:
+  name: admin
+  email: admin@mail.com
+  password: password
+  id: 1

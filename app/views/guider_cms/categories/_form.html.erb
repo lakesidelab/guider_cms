@@ -1,0 +1,34 @@
+<%= form_with(model: category, local: true) do |form| %>
+  <% if category.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(category.errors.count, "error") %> prohibited this category from being saved:</h2>
+
+      <ul>
+        <% category.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <h3>The name of whatever category you want to create</h3>
+  <div class="form-group">
+    <%= form.label :name%>
+    <%= form.text_field :classification, class: "form-control" %>
+  </div>
+
+
+  <h3>It is a main category for a particular root, then choose the root over here</h3>
+  <% if @root_categories != [] %>
+    <div class="form-group">
+      <%= form.label :root_id %>
+      <%= form.select :root_id, @root_categories.collect {|c| [c.classification, c.classification]} , {include_blank: true} ,class: "form-control", id: "root-category" %>
+    </div>
+  <% end %>
+
+
+
+  <div class="actions">
+    <%= form.submit "Create Category", class: "btn btn-outline-primary" %>
+  </div>
+<% end %>

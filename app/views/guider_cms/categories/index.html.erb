@@ -1,0 +1,74 @@
+<%
+  def draw_tree(node)
+    node.children.each do |category|
+%>
+
+<% if category.classification %>
+<li>
+  <%= category.classification %>
+  <%= link_to "Edit", edit_categories_path(category) %>
+  <%= link_to 'Destroy', category,  method: :delete, data: { confirm: 'Are you sure?' } %>
+</li>
+<% end %>
+<%
+          if category.children.any?
+%>
+              <ul><% draw_tree(category) %></ul>
+<%
+          end
+%>
+
+<%
+    end; nil
+  end
+%>
+
+
+
+
+
+
+<h1>Listing Categories</h1>
+
+
+<% @categories.each do |category| %>
+  <ul>
+    <li>
+      <%= category.classification %>
+      <%= link_to "Edit", edit_categories_path(category) %>
+      <%= link_to 'Destroy', category,  method: :delete, data: { confirm: 'Are you sure?' } %>
+    </li>
+    <% if category.children.any? %>
+        <ul><%= draw_tree(category) %></ul>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link_to "Back", content_new_back_path(root: @root) %>
+
+<%
+  def draw_tree(node)
+    node.children.each do |category|
+%>
+
+<% if category.classification  %>
+<tr>
+  <td><%= category.classification %></td>
+  <td><%= link_to "Edit", edit_categories_path(category) %></td>
+  <td><%= link_to 'Destroy', category,  method: :delete, data: { confirm: 'Are you sure?' } %></td>
+</tr>
+<% end %>
+<%
+          if category.children.any?
+%>
+
+                <%= draw_tree(category) %>
+
+<%
+          end
+%>
+
+<%
+    end; nil
+  end
+%>

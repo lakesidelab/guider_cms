@@ -1,0 +1,15 @@
+<%= form_with scope: :subcategory, url: subcategories_path , local: true do |form| %>
+  <div class="form-group">
+    <%= form.label :category %>
+    <%= form.select :category, @categories.collect {|c| [c.classification, c.classification]} , {include_blank: true} ,class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :subcategory %><br>
+    <%= form.text_field :subcategory, class: "form-control" %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Create Subcategory", class: "btn btn-outline-primary" %>
+  </div>
+<% end %>

@@ -1,0 +1,20 @@
+Make sure you give in the class name of your primary accounts model
+in config/initializers/guider_cms.rb
+GuiderCms.author_class = "YOUR_MODEL_CLASS_NAME"
+
+Make sure you have a current_user method in application controller
+in your app in app/controllers/application_controller.rb
+  def current_user
+    #details of current user in session
+    @current_user = details of current user
+  end
+
+Make sure you have a is_guider_admin? method in application controller
+in your app in app/controllers/application_controller.rb
+  def is_guider_admin
+    #write your conditions and in the end
+    @is_guider_admin = true or false(based on your condition)
+  end
+
+Make sure you have a root path in your main application
+root 'welcome#index'

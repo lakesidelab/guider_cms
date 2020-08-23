@@ -1,0 +1,67 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+ .grid-style{
+    padding-top: 15px;
+    padding-bottom: 25px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    background-color: #3CB371;
+    color: white;
+  }
+
+
+ .grid-style:hover{
+   background-color: #2E8B57;
+ }
+
+ /*
+  .grid-style:hover{
+    background-color: #3CB371;
+    color: white;
+  } */
+
+ .grid-link{
+   color: black;
+ }
+
+ .grid-link:hover{
+   text-decoration: none;
+ }
+
+ .listing-links{
+   color: black
+ }
+
+ .listing-active-links{
+   color: #3CB371;
+ }
+
+ .essesntial-links{
+   color: black;
+ }
+
+ .essesntial-links:hover{
+   color: #3CB371;
+ }
+
+ .listing-links:hover{
+   color: black
+ }
+
+ .listing-active-links:hover{
+   color: #3CB371;
+ }
