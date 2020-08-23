@@ -19,7 +19,7 @@ gem 'guider_cms'
 
 And then execute:
 ```bash
-$ bundle
+$ bundle install
 ```
 
 Or install it yourself as:
@@ -54,7 +54,7 @@ has_many :guider_cms_articles , class_name: 'GuiderCms::Article', foreign_key: :
 
 in app/views/layout/application.html.erb include
 ```html
-  <%= stylesheet_link_tag  "guider/application", media: "all" %>
+  <%= stylesheet_link_tag  "guider_cms/application", media: "all" %>
 ```
 this includes all the css for the engine
 
