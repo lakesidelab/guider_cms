@@ -6,9 +6,9 @@
 
 <% if category.articles != [] %>
 <% if category.classification == @selected_category_class.classification %>
-<li><%= link_to "#{category.classification}", contents_path(root: @root,  selected_category: category.classification), class: "listing-active-links" %></li>
+<li><%= link_to "#{category.classification}", contents_path(root: @root,  selected_category: category.slug || category.classification), class: "listing-active-links" %></li>
 <% else %>
-<li><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.classification), class: "listing-links" %></li>
+<li><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.slug || category.classification), class: "listing-links" %></li>
 
 <% end %>
 <% end %>
