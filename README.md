@@ -76,7 +76,6 @@ def is_guider_user
     @is_guider_admin = false  
   end  
 end  
-mount GuiderCms::Engine => "/guider_cms"
 ```
 in app/views/layout/application.html.erb include
 ```html
