@@ -69,7 +69,7 @@ def current_user
 end
 
 
-def is_guider_user
+def is_guider_admin
   if some condition to access guider functionality
     @is_guider_admin = true
   else
