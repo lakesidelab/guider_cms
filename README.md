@@ -7,7 +7,7 @@ Supports for categories and subcategories for all root origin
 
 
 ## Prerequisite
-***Please Ensure you have active storage and active text set up in your application***
+***Please Ensure you have active storage, active text and closure_tree set up in your application***
 
 
 ## Installation
