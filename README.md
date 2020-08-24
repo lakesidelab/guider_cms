@@ -52,6 +52,27 @@ This is done to create the association between the user and articles table
 has_many :guider_cms_articles , class_name: 'GuiderCms::Article', foreign_key: :author_id  
 ```
 
+in your main application app/controllers/application_controller.rb
+add these two functions
+```ruby
+def current_user
+  if user is logged_in
+    @current_user = the user object
+  else
+    @current_user = nil  
+  end  
+end
+
+
+def is_guider_user
+  if some condition to access guider functionality
+    @is_guider_admin = true
+  else
+    @is_guider_admin = false  
+  end  
+end  
+
+```
 in app/views/layout/application.html.erb include
 ```html
   <%= stylesheet_link_tag  "guider_cms/application", media: "all" %>
