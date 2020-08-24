@@ -46,6 +46,11 @@ then finally create the tables
 $ rails db:migrate
 ```
 
+Once all that is done mount the engine in your main application in config/routes.rb
+```ruby
+  mount GuiderCms::Engine => "/guider_cms"
+```
+
 in app/models/your_user_model.rb, add
 This is done to create the association between the user and articles table
 ```ruby
@@ -71,7 +76,7 @@ def is_guider_user
     @is_guider_admin = false  
   end  
 end  
-
+mount GuiderCms::Engine => "/guider_cms"
 ```
 in app/views/layout/application.html.erb include
 ```html
