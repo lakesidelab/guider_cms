@@ -38,7 +38,7 @@ module GuiderCms
     end
 
     def create
-      if params[:category]["root_id"].nil?
+      if params[:category]["root_id"] = ""
         @category = Category.new(classification: params[:category]["classification"], is_root_category: true)
         if @category.save
           redirect_to root_categories_path

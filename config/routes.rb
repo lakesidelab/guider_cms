@@ -20,11 +20,13 @@ GuiderCms::Engine.routes.draw do
 
   # :root_category/:category
 
-  get '/:root/:selected_category/:id/edit', to: 'articles#edit', as: 'edit_content'
+  # get '/:root/:selected_category/:id/edit', to: 'articles#edit', as: 'edit_content'
 
   get '/:root/new', to: 'articles#new', as: 'new_content'
 
   get '/:root/', to: 'articles#index', as: 'content_new_back'
+  
+  get '/:root/:selected_category/:id/edit', to: 'articles#edit', as: 'edit_content'
 
   get '/:root/:selected_category', to: 'articles#index', as: 'contents'
 

@@ -28,7 +28,7 @@
 
   <div class="form-group">
     <%= form.label :category_id %>
-    <%= form.select :category_id, @categories.collect {|c| [c.classification, c.id]} , {include_blank: true} ,class: "form-control" %>
+    <%= form.select :category_id, @total.collect {|c| [c.classification, c.id]} , {include_blank: true} ,class: "form-control" %>
   </div>
   <p>If you are not finding relavant category, then you can <%= link_to "Create a category", new_category_path %>
 

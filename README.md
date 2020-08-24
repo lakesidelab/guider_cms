@@ -48,7 +48,7 @@ $ rails db:migrate
 
 Once all that is done mount the engine in your main application in config/routes.rb
 ```ruby
-  mount GuiderCms::Engine => "/guider_cms"
+  mount GuiderCms::Engine => "/"
 ```
 
 in app/models/your_user_model.rb, add

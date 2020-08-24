@@ -19,6 +19,7 @@ module GuiderCms
       #
       #
       category = Category.find_by(classification: classification)
+      puts(category.id)
       category.children.create(classification: subcategory)
 
       @root = category.ancestors.last.classification

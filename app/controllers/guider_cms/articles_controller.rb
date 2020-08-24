@@ -66,6 +66,7 @@ module GuiderCms
         else
           @root_category = Category.find_by(classification: @root)
           rough = []
+          @total = []
           @categories = @root_category.children
           @categories.each do |category|
             if category.children
@@ -75,11 +76,15 @@ module GuiderCms
             end
           end
 
-          rough.each do |elements|
-            @categories.append(elements)
+          @categories.each do |category|
+            @total.append(category)
           end
 
-          if @categories.nil?
+          rough.each do |elements|
+            @total.append(elements)
+          end
+
+          if @total.nil?
             redirect_to new_optimized_category_path
           else
             @article = Article.new
@@ -104,6 +109,24 @@ module GuiderCms
         @categories = Category.all
         @selected_category = Category.find(@article.category_id)
         @root_category = @selected_category.ancestors.last
+        rough = []
+        @total = []
+        @categories = @root_category.children
+        @categories.each do |category|
+          if category.children
+            category.children.each do |subcategory|
+              rough.append(subcategory)
+            end
+          end
+        end
+
+        @categories.each do |category|
+          @total.append(category)
+        end
+
+        rough.each do |elements|
+          @total.append(elements)
+        end
       end
     end
 
@@ -114,7 +137,7 @@ module GuiderCms
 
 
       @selected_category = Category.find(@article.category_id)
-      @root_category = @selected_category.ancestors.last
+      # @root_category = @selected_category.ancestors.last
 
       @article.author_id = current_user.id
 
@@ -129,7 +152,7 @@ module GuiderCms
     # PATCH/PUT /articles/1
     def update
       if @article.update(article_params)
-        redirect_to content_path(@article, root: @root, selected_category: @selected_category), notice: 'Article was successfully updated.'
+        redirect_to user_articles_path, notice: 'Article was successfully updated.'
       else
         render :edit
       end
@@ -162,7 +185,7 @@ module GuiderCms
       end
 
       def set_article
-        @article = Article.find(params[:id])
+        @article = Article.friendly.find(params[:id])
       end
 
       # Only allow a trusted parameter "white list" through.
