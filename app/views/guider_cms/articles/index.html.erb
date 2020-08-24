@@ -58,7 +58,6 @@
       </center>
     <% else %>
     <div class="row">
-      <%= @selected_category_class.slug || @selected_category_class.classification %>
       <% @selected_category_class.articles.each do |article| %>
       <div class="col-xs-12 col-sm-4 col-md-4">
         <%= link_to content_path(article, root: @root, selected_category: @selected_category_class.classification), class: "grid-link" do %>
