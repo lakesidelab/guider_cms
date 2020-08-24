@@ -35,7 +35,13 @@ module GuiderCms
             @selected_category_class = @children_category.first
           end
         else
-          @selected_category_class = Category.find_by(classification: @selected_category)
+          # @selected_category_class = Category.find_by(classification: @selected_category)
+          if Category.find_by(classification: @selected_category).nil?
+            @selected_category_class = Category.find_by(slug: @selected_category)
+          else
+            @selected_category_class = Category.find_by(classification: @selected_category)
+          end
+
         end
       end
     end

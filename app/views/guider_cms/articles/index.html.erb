@@ -29,9 +29,9 @@
     <% @children_category.each do |category| %>
     <% if category.articles != [] %>
     <% if category.classification == @selected_category_class.classification %>
-      <h5><%= link_to "#{category.classification}", contents_path(root: @root,  selected_category: category.classification), class: "listing-active-links" %></h5>
+      <h5><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.slug || category.classification ), class: "listing-active-links" %></h5>
     <% else %>
-    <h5><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.classification), class: "listing-links" %></h5>
+    <h5><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.slug || category.classification ), class: "listing-links" %></h5>
     <% end %>
     <% if category.children.any? %>
         <ul style="list-style-type: none;"><%= draw_tree(category) %></ul>
@@ -58,6 +58,7 @@
       </center>
     <% else %>
     <div class="row">
+      <%= @selected_category_class.slug || @selected_category_class.classification %>
       <% @selected_category_class.articles.each do |article| %>
       <div class="col-xs-12 col-sm-4 col-md-4">
         <%= link_to content_path(article, root: @root, selected_category: @selected_category_class.classification), class: "grid-link" do %>
