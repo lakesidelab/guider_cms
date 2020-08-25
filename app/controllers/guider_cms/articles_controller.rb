@@ -185,7 +185,11 @@ module GuiderCms
       end
 
       def set_article
-        @article = Article.friendly.find(params[:id])
+        if Article.friendly.find(params[:id]).nil?
+          @article = Article.find_by(slug: params[:id])
+        else
+          @article = Article.friendly.find(params[:id])
+        end
       end
 
       # Only allow a trusted parameter "white list" through.

@@ -7,7 +7,7 @@ Supports for categories and subcategories for all root origin
 
 
 ## Prerequisite
-***Please Ensure you have active storage, active text and closure_tree set up in your application***
+***Please Ensure you have active_storage, action _ext and closure_tree gem set up in your application***
 
 
 ## Installation
@@ -50,6 +50,7 @@ Once all that is done mount the engine in your main application in config/routes
 ```ruby
   mount GuiderCms::Engine => "/"
 ```
+***Be sure to mount the engine at "/" and not any other path***
 
 in app/models/your_user_model.rb, add
 This is done to create the association between the user and articles table
