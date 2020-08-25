@@ -7,7 +7,7 @@ Supports for categories and subcategories for all root origin
 
 
 ## Prerequisite
-***Please Ensure you have active_storage, action _ext and closure_tree gem set up in your application***
+***Please Ensure you have active_storage, action_text and closure_tree gem set up in your application***
 
 
 ## Installation
@@ -78,6 +78,9 @@ def is_guider_admin
   end  
 end  
 ```
+
+***If you are using a engine or library that already provides a current_user method, then you can avoid declaring it seperately***
+
 in app/views/layout/application.html.erb include
 ```html
   <%= stylesheet_link_tag  "guider_cms/application", media: "all" %>
