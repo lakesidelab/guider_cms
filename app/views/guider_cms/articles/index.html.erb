@@ -107,7 +107,11 @@
               <% end %>
             <% end %>
             <div class="card-body">
-              <h4 class="card-title"><%= article.title %></h4>
+              <% if @selected_category_class.parent.nil? %>
+                <h4 class="card-title"><%= link_to "#{article.title}", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "grid-link" %></h4>
+              <% else %>
+                <h4 class="card-title"><%= link_to "#{article.title}", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "grid-link" %></h4>
+              <% end %>
               <p class="card-text"> <%= article.description[0..300].gsub(/\s\w+$/,'...') %></p>
               <% if @selected_category_class.parent.nil? %>
                 <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
@@ -158,7 +162,11 @@
               <% end %>
             <% end %>
             <div class="card-body">
-              <h4 class="card-title"><%= article.title %></h4>
+              <% if @selected_category_class.parent.nil? %>
+                <h4 class="card-title"><%= link_to "#{article.title}", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "grid-link" %></h4>
+              <% else %>
+                <h4 class="card-title"><%= link_to "#{article.title}", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "grid-link" %></h4>
+              <% end %>
               <p class="card-text"> <%= article.description[0..300].gsub(/\s\w+$/,'...') %></p>
               <% if @selected_category_class.parent.nil? %>
                 <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
@@ -405,7 +413,11 @@
               <% end %>
             <% end %>
             <div class="card-body">
-              <h4 class="card-title"><%= article.title %></h4>
+              <% if @selected_category_class.parent.nil? %>
+                <h4 class="card-title"><%= link_to "#{article.title}", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "grid-link" %></h4>
+              <% else %>
+                <h4 class="card-title"><%= link_to "#{article.title}", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "grid-link" %></h4>
+              <% end %>
               <p class="card-text"> <%= article.description[0..300].gsub(/\s\w+$/,'...') %></p>
               <% if @selected_category_class.parent.nil? %>
                 <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>

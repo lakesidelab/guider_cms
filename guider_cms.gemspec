@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "closure_tree"
 
-  spec.add_dependency "friendly_id", "~> 5.2.4"
+  spec.add_dependency "friendly_id"
 
   spec.add_dependency "jquery-rails"
 

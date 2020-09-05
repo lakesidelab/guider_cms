@@ -1,3 +1,3 @@
 module GuiderCms
-  VERSION = '1.1.0'
+  VERSION = '1.4.0'
 end

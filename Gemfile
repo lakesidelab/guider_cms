@@ -14,6 +14,6 @@ gem 'acts_as_list'
 
 gem 'jquery-rails'
 
-gem 'friendly_id', '~> 5.2.4'
+gem 'friendly_id', '~> 5.4.0'
 
 gem 'kaminari'
