@@ -23,8 +23,8 @@ module GuiderCms
           if @selected_category.nil?
             @selected_category_class = @root_category
           end
+          @children_category = @root_category.children.order(:id)
         end
-        @children_category = @root_category.children.order(:id)
       else
         @root_category = Category.find_by(classification: @root) || Category.find_by(slug: @root)
         if @selected_category.nil?

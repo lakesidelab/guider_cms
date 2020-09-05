@@ -33,7 +33,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "friendly_id"
 
-  spec.add_dependency "jquery-rails"
 
   spec.add_dependency "acts_as_list"
 
