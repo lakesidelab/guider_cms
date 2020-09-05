@@ -10,9 +10,10 @@ gem "bootstrap"
 
 gem "closure_tree"
 
+gem 'acts_as_list'
 
 gem 'jquery-rails'
 
 gem 'friendly_id', '~> 5.2.4'
 
-gem 'has_scope'
+gem 'kaminari'

@@ -1,4 +1,9 @@
-<h1>Articles</h1>
+<% title @selected_category_class.classification || @root_category.classification %>
+<% meta_tag :root, @root_category.classification %>
+<% meta_tag :category, @selected_category_class.classification %>
+
+
+
 <%
   def draw_tree(node)
     node.children.each do |category|
@@ -6,9 +11,9 @@
 
 <% if category.articles != [] %>
 <% if category.classification == @selected_category_class.classification %>
-<li><%= link_to "#{category.classification}", contents_path(root: @root,  selected_category: category.slug || category.classification), class: "listing-active-links" %></li>
+<li><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification,  selected_category: category.slug || category.classification), class: "listing-active-links" %></li>
 <% else %>
-<li><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.slug || category.classification), class: "listing-links" %></li>
+<li><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification), class: "listing-links" %></li>
 
 <% end %>
 <% end %>
@@ -24,61 +29,500 @@
     end; nil
   end
 %>
+
+
+<div class="row">
+  <div class="col-md-6">
+    <h1><%= @root_category.classification %></h1>
+  </div>
+  <div class="col-md-6">
+    <div class="row">
+      <% if @current_user && @is_guider_admin %>
+      <div class="col-md-3" style="padding-top: 10px;">
+        <h6><%= link_to "New Content", new_content_path(root: @root), class: "listing-links" %></h6>
+      </div>
+      <div class="col-md-3" style="padding-top: 10px;">
+        <h6><%= link_to "New Category", new_optimized_category_path, class: "listing-links" %></h6>
+      </div>
+      <div class="col-md-3" style="padding-top: 10px;">
+        <h6><%= link_to "Show Cateories", root_categories_path, class: "listing-links" %></h6>
+      </div>
+      <% end %>
+      <% if @selected_category_class && @root_category.view_type == "grid" && @selected_category_class.parent && @selected_category_class.parent.id != @root_category.id %>
+        <div class="col-md-3" style="padding-top: 10px;">
+          <h6><%= link_to "#{@selected_category_class.parent.classification}", contents_path(root: @root_category.slug || @root_category.classification,
+            selected_category: @selected_category_class.parent.slug || @selected_category_class.parent.classification), class: "listing-links"%></h6>
+        </div>
+      <% elsif @selected_category_class && @selected_category_class.parent && @selected_category_class.parent.id == @root_category.id && @root_category.view_type == "grid" %>
+        <div class="col-md-3" style="padding-top: 10px;">
+          <h6><%= link_to "#{@selected_category_class.parent.classification}", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-links" %></h6>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+</div>
+<br/>
+<% if @root_category.view_type.nil? || @root_category.view_type == "menu" || @root_category.view_type == "normal grid with menu" %>
+  <div class="row">
+    <div class="col-sm-3 col-md-3" >
+      <% if @root_category.articles !=[] && @root_category.children != [] %>
+        <% if @selected_category.nil? %>
+        <h6><%= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-active-links" %></h6>
+        <% else %>
+        <h6><%= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-links" %></h6>
+        <% end %>
+      <% end %>
+      <% @children_category.each do |category| %>
+      <% if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin) %>
+      <% if category.classification == @selected_category_class.classification %>
+        <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-active-links" %></h6>
+      <% else %>
+      <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-links" %></h6>
+      <% end %>
+      <% if category.children.any? %>
+          <ul style="list-style-type: none;"><%= draw_tree(category) %></ul>
+      <% end %>
+      <% end %>
+      <% end %>
+    </div>
+    <div class="col-sm-9 col-md-9">
+      <% if @selected_category_class.articles == [] %>
+        <center>
+          <h1>No Content Here</h1>
+          <% if @current_user && @is_guider_admin %>
+            <h3>Click on New Content to create Content</h3>
+          <% end %>
+        </center>
+      <% else %>
+      <div class="row">
+        <div class="card-columns">
+        <% @selected_category_class.articles.each do |article| %>
+            <div class="card" style="margin-bottom: 2vh;">
+            <% if article.header_image.attached?  %>
+              <%= image_tag(main_app.url_for(article.header_image), class: "card-img-top") %>
+            <% else %>
+              <% if article.body.embeds.find{|embeds| embeds.image?} %>
+                <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), class: "card-img-top") %>
+              <% end %>
+            <% end %>
+            <div class="card-body">
+              <h4 class="card-title"><%= article.title %></h4>
+              <p class="card-text"> <%= article.description[0..300].gsub(/\s\w+$/,'...') %></p>
+              <% if @selected_category_class.parent.nil? %>
+                <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
+              <% else %>
+                <%= link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-outline-primary"%>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<% elsif @root_category.view_type == "grid" || @root_category.view_type == "full grid" %>
+  <% if @selected_category_class.articles == [] %>
+    <br/><br/>
+      <center>
+        <h1>No content here</h1>
+      </center>
+  <% else %>
+    <% if @selected_category_class.articles != []%>
+      <div class="row">
+        <div class="card-columns">
+          <% if @selected_category_class.children != [] %>
+            <% @selected_category_class.children.each do |category| %>
+              <% if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin )  %>
+                  <div class="card" style="margin-bottom: 2vh;">
+                    <%= link_to contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification), class: "grid-link" do %>
+                      <% if category.header_image.attached?  %>
+                        <%= image_tag(main_app.url_for(category.header_image), class: "card-img-top") %>
+                      <% end %>
+                      <div class="card-body">
+                        <h4 class="card-title"><%= category.classification %></h4>
+                      </div>
+                    <% end %>
+                  </div>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% @selected_category_class.articles.each do |article| %>
+            <div class="card" style="margin-bottom: 2vh;">
+            <% if article.header_image.attached?  %>
+              <%= image_tag(main_app.url_for(article.header_image), class: "card-img-top") %>
+            <% else %>
+              <% if article.body.embeds.find{|embeds| embeds.image?} %>
+                <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), class: "card-img-top") %>
+              <% end %>
+            <% end %>
+            <div class="card-body">
+              <h4 class="card-title"><%= article.title %></h4>
+              <p class="card-text"> <%= article.description[0..300].gsub(/\s\w+$/,'...') %></p>
+              <% if @selected_category_class.parent.nil? %>
+                <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
+              <% else %>
+                <%= link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-outline-primary"%>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+<% elsif @root_category.view_type == "blog grid" %>
 <div class="row">
   <div class="col-sm-3 col-md-3" >
-    <% @children_category.each do |category| %>
-    <% if category.articles != [] %>
-    <% if category.classification == @selected_category_class.classification %>
-      <h5><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.slug || category.classification ), class: "listing-active-links" %></h5>
+    <% if @selected_category.nil? %>
+      <h6><%= link_to "Latest", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-active-links" %></h6>
     <% else %>
-    <h5><%= link_to "#{category.classification}", contents_path(root: @root, selected_category: category.slug || category.classification ), class: "listing-links" %></h5>
+      <h6><%= link_to "Latest", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-links" %></h6>
+    <% end %>
+    <% @children_category.each do |category| %>
+      <% if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin) %>
+        <% if category.classification == @selected_category_class.classification %>
+          <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-active-links" %></h6>
+        <% else %>
+        <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-links" %></h6>
+        <% end %>
+        <% if category.children.any? %>
+            <ul style="list-style-type: none;"><%= draw_tree(category) %></ul>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="col-md-9 col-sm-9">
+    <% if @articles == [] %>
+      <br/><br/>
+      <center>
+        <h1>No Content Here</h1>
+      </center>
+    <% else %>
+      <div class="row">
+        <div class="card-columns">
+          <% if @selected_category_class.id == @root_category.id %>
+            <% @articles.each do |article| %>
+              <div class="card" style="margin-bottom: 2vh;">
+                <% if article.header_image.attached?  %>
+                  <%= image_tag(main_app.url_for(article.header_image), class: "card-img-top") %>
+                <% else %>
+                  <% if article.body.embeds.find{|embeds| embeds.image?} %>
+                    <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), class: "card-img-top") %>
+                  <% end %>
+                <% end %>
+                <div class="card-body">
+                  <% if @selected_category_class.parent.nil? %>
+                    <h4 class="card-title"><%= link_to "#{article.title}", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "grid-link" %></h4>
+                  <% else %>
+                    <h4 class="card-title"><%= link_to "#{article.title}", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "grid-link" %></h4>
+                  <% end %>
+                  <p class="card-text"> <%= article.description[0..300].gsub(/\s\w+$/,'...') %></p>
+                  <% if @selected_category_class.parent.nil? %>
+                    <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
+                  <% else %>
+                    <%= link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-outline-primary"%>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+          <% @selected_category_class.articles.each do |article| %>
+          <div class="card" style="margin-bottom: 2vh;">
+            <% if article.header_image.attached?  %>
+              <%= image_tag(main_app.url_for(article.header_image), class: "card-img-top") %>
+            <% else %>
+              <% if article.body.embeds.find{|embeds| embeds.image?} %>
+                <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), class: "card-img-top") %>
+              <% end %>
+            <% end %>
+              <div class="card-body">
+                <% if @selected_category_class.parent.nil? %>
+                  <h4 class="card-title"><%= link_to "#{article.title}", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "grid-link" %></h4>
+                <% else %>
+                  <h4 class="card-title"><%= link_to "#{article.title}", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "grid-link" %></h4>
+                <% end %>
+                <p class="card-text"> <%= article.description[0..300].gsub(/\s\w+$/,'...') %></p>
+                <% if @selected_category_class.parent.nil? %>
+                  <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
+                <% else %>
+                  <%= link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-outline-primary"%>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <% end %>
+        </div>
+      <% if @selected_category_class.id == @root_category.id %>
+      <center>
+        <h5><%= paginate @articles %></h5>
+      </center>
+      <% end %>
+        <% end %>
+  </div>
+</div>
+    <% elsif @root_category.view_type == "blog list" %>
+    <div class="row">
+      <div class="col-sm-3 col-md-3" >
+        <% if @selected_category.nil? %>
+          <h6><%= link_to "Latest", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-active-links" %></h6>
+        <% else %>
+          <h6><%= link_to "Latest", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-links" %></h6>
+        <% end %>
+        <% @children_category.each do |category| %>
+          <% if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin) %>
+            <% if category.classification == @selected_category_class.classification %>
+              <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-active-links" %></h6>
+            <% else %>
+            <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-links" %></h6>
+            <% end %>
+            <% if category.children.any? %>
+                <ul style="list-style-type: none;"><%= draw_tree(category) %></ul>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="col-md-9 col-sm-9">
+        <% if @articles == [] %>
+          <br/><br/>
+          <center>
+            <h1>No Content Here</h1>
+          </center>
+        <% else %>
+              <% if @selected_category_class.id == @root_category.id %>
+                <% @articles.each do |article| %>
+                <div class="card" style="margin-bottom: 10px;">
+                  <div class="row no-gutters">
+                    <div class="col-md-6">
+                      <% if article.header_image.attached?  %>
+                        <%= image_tag(main_app.url_for(article.header_image), style: "height:100%;width:100%;") %>
+                      <% else %>
+                        <% if article.body.embeds.find{|embeds| embeds.image?} %>
+                          <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), style: "height:100%;width:100%;") %>
+                        <% end %>
+                      <% end %>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card-body">
+                        <% if @selected_category_class.parent.nil? %>
+                          <h4 class="card-title"><%= link_to "#{article.title}", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "grid-link" %></h4>
+                        <% else %>
+                          <h4 class="card-title"><%= link_to "#{article.title}", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "grid-link" %></h4>
+                        <% end %>
+                        <p class="card-text"><%= article.description %></p>
+                        <% if @selected_category_class.parent.nil? %>
+                          <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
+                        <% else %>
+                          <%= link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-outline-primary"%>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% end %>
+              <% else %>
+              <% @selected_category_class.articles.each do |article| %>
+              <div class="card">
+                <div class="row no-gutters">
+                  <div class="col-md-6">
+                    <% if article.header_image.attached?  %>
+                      <%= image_tag(main_app.url_for(article.header_image), style: "height:100%;width:100%;") %>
+                    <% else %>
+                      <% if article.body.embeds.find{|embeds| embeds.image?} %>
+                        <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), style: "height:100%;width:100%;") %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card-body">
+                      <% if @selected_category_class.parent.nil? %>
+                        <h4 class="card-title"><%= link_to "#{article.title}", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "grid-link" %></h4>
+                      <% else %>
+                        <h4 class="card-title"><%= link_to "#{article.title}", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "grid-link" %></h4>
+                      <% end %>
+                      <p class="card-text"><%= article.description %></p>
+                      <% if @selected_category_class.parent.nil? %>
+                        <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
+                      <% else %>
+                        <%= link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-outline-primary"%>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% end %>
+              <% if @selected_category_class.id == @root_category.id %>
+              <center>
+                <h5><%= paginate @articles %></h5>
+              </center>
+              <% end %>
+            <% end %>
+      </div>
+  </div>
+<% elsif @root_category.view_type == "ordered grid" %>
+  <div class="row">
+    <div class="col-sm-3 col-md-3" >
+      <% if @root_category.articles !=[] && @root_category.children != [] %>
+        <% if @selected_category.nil? %>
+        <h6><%= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-active-links" %></h6>
+        <% else %>
+        <h6><%= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-links" %></h6>
+        <% end %>
+      <% end %>
+      <% @children_category.each do |category| %>
+      <% if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin) %>
+      <% if category.classification == @selected_category_class.classification %>
+        <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-active-links" %></h6>
+      <% else %>
+      <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-links" %></h6>
+      <% end %>
+      <% if category.children.any? %>
+          <ul style="list-style-type: none;"><%= draw_tree(category) %></ul>
+      <% end %>
+      <% end %>
+      <% end %>
+    </div>
+    <div class="col-sm-9 col-md-9">
+      <% if @selected_category_class.articles == [] %>
+        <center>
+          <h1>No Content Here</h1>
+          <% if @current_user && @is_guider_admin %>
+            <h3>Click on New Content to create Content</h3>
+          <% end %>
+        </center>
+      <% else %>
+      <div class="row">
+        <div class="card-columns">
+        <% @selected_category_class.articles.order(position: :asc).each do |article| %>
+            <div class="card" style="margin-bottom: 2vh;">
+            <% if article.header_image.attached?  %>
+              <%= image_tag(main_app.url_for(article.header_image), class: "card-img-top") %>
+            <% else %>
+              <% if article.body.embeds.find{|embeds| embeds.image?} %>
+                <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), class: "card-img-top") %>
+              <% end %>
+            <% end %>
+            <div class="card-body">
+              <h4 class="card-title"><%= article.title %></h4>
+              <p class="card-text"> <%= article.description[0..300].gsub(/\s\w+$/,'...') %></p>
+              <% if @selected_category_class.parent.nil? %>
+                <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
+              <% else %>
+                <%= link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-outline-primary"%>
+              <% end %>
+              <% if @current_user && @is_guider_admin %>
+                <% if @selected_category_class.id == @root_category.id %>
+                  <%= link_to move_article_backward_path(article, root: @root_category.slug) do %>
+                  <%= image_tag("guider_cms/up.png", height: "25")  %>
+                  <% end %>
+                <% else %>
+                  <%= link_to move_article_backward_path(article, root: @root_category.slug, selected_category: @selected_category_class.slug) do %>
+                  <%= image_tag("guider_cms/up.png", height: "25")  %>
+                  <% end %>
+                <% end %>
+                <% if @selected_category_class.id == @root_category.id %>
+                  <%= link_to move_article_forward_path(article, root: @root_category.slug) do %>
+                  <%= image_tag("guider_cms/down.png", height: "25")  %>
+                  <% end %>
+                <% else %>
+                  <%= link_to move_article_forward_path(article, root: @root_category.slug, selected_category: @selected_category_class.slug) do %>
+                  <%= image_tag("guider_cms/down.png", height: "25")  %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      </div>
+      <% end %>
+    </div>
+  </div>
+<% elsif @root_category.view_type == "ordered list" %>
+<div class="row">
+  <div class="col-sm-3 col-md-3" >
+    <% if @root_category.articles !=[] && @root_category.children != [] %>
+      <% if @selected_category.nil? %>
+      <h6><%= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-active-links" %></h6>
+      <% else %>
+      <h6><%= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-links" %></h6>
+      <% end %>
+    <% end %>
+    <% @children_category.each do |category| %>
+    <% if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin) %>
+    <% if category.classification == @selected_category_class.classification %>
+      <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-active-links" %></h6>
+    <% else %>
+    <h6><%= link_to "#{category.classification}", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-links" %></h6>
     <% end %>
     <% if category.children.any? %>
         <ul style="list-style-type: none;"><%= draw_tree(category) %></ul>
     <% end %>
     <% end %>
     <% end %>
-    <br/>
-    <% if @current_user %>
-    <h5><%= link_to "New Content", new_content_path(root: @root), class: "essesntial-links" %></h5>
-    <h5><%= link_to "Your Content Here", user_articles_path, class: "essesntial-links" %></h5>
-    <h5><%= link_to "New Category", new_optimized_category_path, class: "essesntial-links" %></h5>
-    <h5><%= link_to "New Subcategory", new_subcategory_path(root: @root), class: "essesntial-links" %></h5>
-    <h5><%= link_to "Show categories", root_categories_path, class: "essesntial-links" %></h5>
-    <h5><%= link_to "Back", main_app.root_path, class: "essesntial-links" %></h5>
-    <% end %>
   </div>
   <div class="col-sm-9 col-md-9">
-    <% if @root_category.children.first.articles == [] %>
+    <% if @selected_category_class.articles == [] %>
       <center>
         <h1>No Content Here</h1>
         <% if @current_user && @is_guider_admin %>
-          <h3>Click on New Acticle to create Content</h3>
+          <h3>Click on New Content to create Content</h3>
         <% end %>
       </center>
     <% else %>
-    <div class="row">
-      <% @selected_category_class.articles.each do |article| %>
-      <div class="col-xs-12 col-sm-4 col-md-4">
-        <%= link_to content_path(article, root: @root, selected_category: @selected_category_class.classification), class: "grid-link" do %>
-        <div class="grid-style">
-          <div class="container">
-            <% if article.header_image.attached?  %>
-            <%= image_tag(main_app.url_for(article.header_image), width: "100%") %>
-            <% else %>
-            <% if article.body.embeds.find{|embeds| embeds.image?} %>
-            <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), width: "100%") %>
-            <% end %>
-            <% end %>
-            <br /><br />
-            <h5><%= article.title %></h5>
-            <p><%= article.description[0..200].gsub(/\s\w+$/,'...') %></p>
+      <% @selected_category_class.articles.order(position: :asc).each do |article| %>
+        <div class="card" style="margin-bottom: 10px;">
+          <div class="row no-gutters">
+            <div class="col-md-6">
+              <% if article.header_image.attached?  %>
+                <%= image_tag(main_app.url_for(article.header_image), style: "height:100%;width:100%;") %>
+              <% else %>
+                <% if article.body.embeds.find{|embeds| embeds.image?} %>
+                  <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), style: "height:100%;width:100%;") %>
+                <% end %>
+              <% end %>
+            </div>
+            <div class="col-md-6">
+              <div class="card-body">
+                <% if @selected_category_class.parent.nil? %>
+                  <h4 class="card-title"><%= link_to "#{article.title}", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "grid-link" %></h4>
+                <% else %>
+                  <h4 class="card-title"><%= link_to "#{article.title}", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "grid-link" %></h4>
+                <% end %>
+                <p class="card-text"><%= article.description %></p>
+                <% if @selected_category_class.parent.nil? %>
+                  <%= link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"%>
+                <% else %>
+                  <%= link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-outline-primary"%>
+                <% end %>
+                <% if @current_user && @is_guider_admin %>
+                  <% if @selected_category_class.id == @root_category.id %>
+                    <%= link_to move_article_backward_path(article, root: @root_category.slug) do %>
+                    <%= image_tag("guider_cms/up.png", height: "25")  %>
+                    <% end %>
+                  <% else %>
+                    <%= link_to move_article_backward_path(article, root: @root_category.slug, selected_category: @selected_category_class.slug) do %>
+                    <%= image_tag("guider_cms/up.png", height: "25")  %>
+                    <% end %>
+                  <% end %>
+                  <% if @selected_category_class.id == @root_category.id %>
+                    <%= link_to move_article_forward_path(article, root: @root_category.slug) do %>
+                    <%= image_tag("guider_cms/down.png", height: "25")  %>
+                    <% end %>
+                  <% else %>
+                    <%= link_to move_article_forward_path(article, root: @root_category.slug, selected_category: @selected_category_class.slug) do %>
+                    <%= image_tag("guider_cms/down.png", height: "25")  %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
           </div>
         </div>
-        <% end  %>
-      </div>
       <% end %>
     </div>
-  </div>
-</div>
     <% end %>
+</div>
+<% end %>

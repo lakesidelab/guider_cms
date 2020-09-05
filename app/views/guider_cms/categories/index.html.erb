@@ -6,6 +6,7 @@
 <% if category.classification %>
 <li>
   <%= category.classification %>
+  (Slug: <%= category.slug %>)
   <%= link_to "Edit", edit_categories_path(category) %>
   <%= link_to 'Destroy', category,  method: :delete, data: { confirm: 'Are you sure?' } %>
 </li>
@@ -35,6 +36,7 @@
   <ul>
     <li>
       <%= category.classification %>
+      (Slug: <%= category.slug %>)
       <%= link_to "Edit", edit_categories_path(category) %>
       <%= link_to 'Destroy', category,  method: :delete, data: { confirm: 'Are you sure?' } %>
     </li>

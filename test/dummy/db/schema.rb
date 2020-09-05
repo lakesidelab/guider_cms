@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_23_134114) do
+ActiveRecord::Schema.define(version: 2020_08_31_182803) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 2020_08_23_134114) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "slug"
+    t.text "keywords"
     t.index ["slug"], name: "index_guider_cms_articles_on_slug", unique: true
   end
 
@@ -75,6 +76,9 @@ ActiveRecord::Schema.define(version: 2020_08_23_134114) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "parent_id"
     t.boolean "is_root_category"
+    t.string "slug"
+    t.string "view_type"
+    t.index ["slug"], name: "index_guider_cms_categories_on_slug", unique: true
   end
 
   create_table "guider_cms_category_hierarchies", id: false, force: :cascade do |t|

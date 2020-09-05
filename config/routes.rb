@@ -22,16 +22,25 @@ GuiderCms::Engine.routes.draw do
 
   # get '/:root/:selected_category/:id/edit', to: 'articles#edit', as: 'edit_content'
 
+  get '/move_higher/:id', to: 'articles#edit_article_position_one_backward', as: 'move_article_backward'
+
+  get '/move_lower/:id', to: 'articles#edit_article_position_one_forward', as: 'move_article_forward'
+
   get '/:root/new', to: 'articles#new', as: 'new_content'
 
+
+  get '/:root/:id/edit', to: 'articles#edit', as: 'root_content_edit'
+
   get '/:root/', to: 'articles#index', as: 'content_new_back'
-  
-  get '/:root/:selected_category/:id/edit', to: 'articles#edit', as: 'edit_content'
+
+  get '/:root/content/:id', to: 'articles#show', as: 'root_articles'
 
   get '/:root/:selected_category', to: 'articles#index', as: 'contents'
 
+
   get '/:root/:selected_category/:id', to: 'articles#show', as: 'content'
 
+  get '/:root/:selected_category/:id/edit', to: 'articles#edit', as: 'edit_content'
 
   resources :categories
 

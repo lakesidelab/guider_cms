@@ -3,6 +3,8 @@ module GuiderCms
 
     extend FriendlyId
     friendly_id :title, use: :slugged
+    paginates_per 10
+    acts_as_list 
 
     belongs_to :author, class_name: GuiderCms.author_class
     belongs_to :category

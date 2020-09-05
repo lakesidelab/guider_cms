@@ -1,4 +1,4 @@
 module GuiderCms
-  module CategoriesHelper
+  module CategoriesHelper  
   end
 end
