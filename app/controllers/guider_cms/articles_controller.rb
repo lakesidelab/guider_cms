@@ -2,6 +2,7 @@ require_dependency "guider_cms/application_controller"
 
 module GuiderCms
   class ArticlesController < ApplicationController
+    layout GuiderCms.layout || 'application'
     include GuiderCms::ArticlesHelper
     before_action :set_article, only: [:edit, :update, :destroy, :edit_article_position_one_backward, :edit_article_position_one_forward]
     # before_action :is_guider_assesible, only: [:new, :edit, :update, :destroy]

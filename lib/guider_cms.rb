@@ -7,4 +7,5 @@ require "acts_as_list"
 
 module GuiderCms
   mattr_accessor :author_class
+  mattr_accessor :layout
 end
