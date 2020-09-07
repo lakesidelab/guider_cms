@@ -4,26 +4,25 @@ module GuiderCms
   module Generators
     class ViewsGenerator < Rails::Generators::Base
 
-      source_root File.expand_path("../../../../app/views/guider_cms", __FILE__)
+      source_root File.expand_path("../../../../app/assets/stylesheets/", __FILE__)
 
       argument :scope, required: false, default: nil,
-                         desc: "The scope to copy views to"
+                         desc: "The scope to copy stylesheets to main app"
 
       def copy_views
-        view_directory :articles
-        view_directory :categories
+        view_directory :guider_cms
       end
 
       protected
 
       def view_directory(name, _target_path = nil)
-        directory name.to_s, _target_path || "#{target_path}/guider_cms/#{name}" do |content|
+        directory name.to_s, _target_path || "#{target_path}/#{name}" do |content|
           content
         end
       end
 
       def target_path
-        @target_path ||= "app/views/#{plural_scope}"
+        @target_path ||= "app/assets/stylesheets/"
       end
 
       def plural_scope
