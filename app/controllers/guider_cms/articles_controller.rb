@@ -152,12 +152,16 @@ module GuiderCms
 
       category_id = @article.category_id
       if @article.update(article_params)
-        req_category_id = @article.category_id || category_id
+        if @article.category_id != ""
+          req_category_id = @article.category_id
+        else
+          req_category_id = category_id
+        end
         @selected_category_class = Category.find(req_category_id)
         @root_category = @selected_category_class.ancestors.last
         # redirect_to user_articles_path, notice: 'Article was successfully updated.'
         if @root_category.nil?
-          redirect_to content_new_back_path(root: @selected_category.slug || @selected_category.classification)
+          redirect_to content_new_back_path(root: @selected_category_class.slug || @selected_category_class.classification)
         else
           redirect_to content_path(@article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug || @selected_category_class.classification), notice: 'Article was successfully created.'
         end

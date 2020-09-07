@@ -46,7 +46,7 @@
   </ul>
 <% end %>
 
-<%= link_to "Back", content_new_back_path(root: @root) %>
+<%= link_to "Back", content_new_back_path(root: @root_category.slug || @root_category.classification) %>
 
 <%
   def draw_tree(node)

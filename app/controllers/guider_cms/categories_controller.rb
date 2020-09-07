@@ -11,7 +11,7 @@ module GuiderCms
         redirect_to new_optimized_category_path
       else
         @categories = Category.where(is_root_category: true)
-        @root = Category.where(is_root_category: true).first.classification
+        @root_category = Category.where(is_root_category: true).first
       end
     end
 
@@ -62,7 +62,7 @@ module GuiderCms
           redirect_to root_categories_path
         end
       else
-        parent_category = Category.find_by(classification: params[:category]["parent_id"])
+        parent_category = Category.find(params[:category]["parent_id"])
         in_que_category = Category.find_by(classification: params[:category]["classification"])
         in_que_category.parent_id = parent_category.id
         if in_que_category.update(category_params)
