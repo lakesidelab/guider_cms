@@ -304,7 +304,7 @@
                   <div class="row no-gutters">
                     <div class="col-md-6">
                       <% if article.header_image.attached?  %>
-                        <%= image_tag(main_app.url_for(article.header_image), style: "height:100%;width:100%;") %>
+                        <%= image_tag(main_app.url_for(article.header_image), style: "width:100%;") %>
                       <% else %>
                         <% if article.body.embeds.find{|embeds| embeds.image?} %>
                           <%= image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), style: "height:100%;width:100%;") %>

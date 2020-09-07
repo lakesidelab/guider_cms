@@ -24,7 +24,7 @@
       <h5><%= form.label :parent_id %></h5>
       <p>If you want your category to be a parent, then leave this empty, otherwise if you want it to
       be a child of a category you have already created then select the desired category</p>
-      <%= form.select :parent_id, options_for_select(category_options_array()) , {include_blank: true} ,class: "form-control" %>
+      <%= form.select :parent_id, options_for_select(category_options_array(), @category.parent_id), {include_blank: true} ,class: "form-control" %>
     </div>
   <% end %>
 
@@ -38,7 +38,7 @@
     <h5>View type</h5>
     <p>Grid view type will have everything in a grid whereas menu will have categories listed on the left</p>
     <b>This input will only be considered, if the category being created does not have a parent</b>
-    <%= form.select :view_type, @view_type, {include_blank: true}, class: "form-control" %>
+    <%= form.select :view_type, @view_type, {selected: "ordered list"}, class: "form-control" %>
   </div>
   <% end %>
 

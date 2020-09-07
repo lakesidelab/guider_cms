@@ -23,8 +23,8 @@ module GuiderCms
           @root = @root_category.classification
           if @selected_category.nil?
             @selected_category_class = @root_category
+            @children_category = @root_category.children.order(:id)
           end
-          @children_category = @root_category.children.order(:id)
         end
       else
         @root_category = Category.find_by(classification: @root) || Category.find_by(slug: @root)
@@ -150,9 +150,9 @@ module GuiderCms
     # PATCH/PUT /articles/1
     def update
 
-      category_id = @article.id
+      category_id = @article.category_id
       if @article.update(article_params)
-        req_category_id = @article.id || category_id
+        req_category_id = @article.category_id || category_id
         @selected_category_class = Category.find(req_category_id)
         @root_category = @selected_category_class.ancestors.last
         # redirect_to user_articles_path, notice: 'Article was successfully updated.'

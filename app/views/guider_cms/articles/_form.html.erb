@@ -23,7 +23,7 @@
 
   <div class="form-group">
     <%= form.label :keywords %>
-    <%= form.text_area :keywords, class: "form-control", required: true %>
+    <%= form.text_area :keywords, class: "form-control" %>
   </div>
   <p>Enter keywords related to your write up seperated by ","</p>
 
@@ -34,7 +34,7 @@
 
   <div class="form-group">
     <%= form.label :category_id %>
-    <%= form.select :category_id, options_for_select(category_options_array_for_article(nil, [], @root_category.id, 0)) , {include_blank: true} ,class: "form-control" %>
+    <%= form.select :category_id, options_for_select(category_options_array_for_article(nil, [], @root_category.id, 0), @article.category_id) , {selected: @article.category_id, required: true} ,class: "form-control" %>
   </div>
   <p>If you are not finding relavant category, then you can <%= link_to "Create a category", new_category_path %></p>
   <p>If you don't want to put it in a specific category, then just select <%= @root %></p>
@@ -46,6 +46,6 @@
 
 
   <div class="actions">
-    <%= form.submit "Create Article", class: "btn btn-outline-primary" %>
+    <%= form.submit class: "btn btn-primary" %>
   </div>
 <% end %>
