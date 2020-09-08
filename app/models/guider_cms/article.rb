@@ -4,7 +4,7 @@ module GuiderCms
     extend FriendlyId
     friendly_id :title, use: :slugged
     paginates_per 10
-    acts_as_list 
+    acts_as_list
 
     belongs_to :author, class_name: GuiderCms.author_class
     belongs_to :category
@@ -18,6 +18,11 @@ module GuiderCms
     validates :description, presence: true
 
     private
+    def should_generate_new_friendly_id?
+      slug.blank? || title_changed?
+    end
+
+
     def set_author
       self.author = GuiderCms.author_class.constantize.find(author_id)
     end

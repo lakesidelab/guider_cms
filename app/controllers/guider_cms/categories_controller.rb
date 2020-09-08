@@ -57,19 +57,25 @@ module GuiderCms
     end
 
     def update
-      if params[:category]["parent_id"] == ""
-        if @category.update(classification: params[:category]["classification"], parent_id: nil, view_type: params[:category]["view_type"], header_image: params[:category]["header_image"])
-          redirect_to root_categories_path
-        end
+      # if params[:category]["parent_id"] == ""
+      #   # if @category.update(classification: params[:category]["classification"], parent_id: nil, view_type: params[:category]["view_type"], header_image: params[:category]["header_image"])
+      #   if @category.update(category_params)
+      #     redirect_to root_categories_path
+      #   end
+      # else
+      #   parent_category = Category.find(params[:category]["parent_id"])
+      #   in_que_category = Category.find_by(classification: params[:category]["classification"])
+      #   in_que_category.parent_id = parent_category.id
+      #   if in_que_category.update(category_params)
+      #     redirect_to root_categories_path
+      #   else
+      #     render :edit
+      #   end
+      # end
+      if @category.update(category_params)
+        redirect_to root_categories_path
       else
-        parent_category = Category.find(params[:category]["parent_id"])
-        in_que_category = Category.find_by(classification: params[:category]["classification"])
-        in_que_category.parent_id = parent_category.id
-        if in_que_category.update(category_params)
-          redirect_to root_categories_path
-        else
-          render :edit
-        end
+        render :edit
       end
     end
 
@@ -106,7 +112,7 @@ module GuiderCms
     end
 
     def category_params
-      params.require(:category).permit(:classification, :parent_id, :view_type, :header_image)
+      params.require(:category).permit(:classification, :parent_id, :view_type, :header_image, :slug)
     end
   end
 end

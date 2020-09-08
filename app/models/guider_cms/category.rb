@@ -6,5 +6,12 @@ module GuiderCms
     has_one_attached :header_image
     has_many :articles
     validates :classification, presence: true
+
+    private
+    def should_generate_new_friendly_id?
+      slug.blank? || classification_changed?
+    end
   end
+
+
 end
