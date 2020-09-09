@@ -16,7 +16,7 @@ module GuiderCms
       @current_user = current_user
       @selected_category = params[:selected_category]
       if @root.nil?
-        @root_category = Category.where(is_root_category: true).first
+        @root_category = Category.where(parent_id: nil).first
         if @root_category.nil?
           redirect_to new_optimized_category_path, alert: "Create a root category first"
         else
