@@ -1,6 +1,6 @@
 module GuiderCms
   class ApplicationController < ::ApplicationController
-    rescue_from StandardError, :with => :render_404 
+    # rescue_from StandardError, :with => :render_404 
     # protect_from_forgery with: :exception
     layout 'application'
 

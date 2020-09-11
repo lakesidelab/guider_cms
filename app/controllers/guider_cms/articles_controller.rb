@@ -12,6 +12,7 @@ module GuiderCms
 
     def index
       @root = params[:root]
+      @keyword = "home"
       @is_guider_admin = is_guider_admin
       @current_user = current_user
       @selected_category = params[:selected_category]
@@ -40,7 +41,7 @@ module GuiderCms
           @selected_category_class = @root_category.children.first
         end
       end
-      if @root_category.view_type == "ordered list"
+      if @root_category.view_type == "ordered list" || @root_category.view_type == "ordered grid"
         if @root_category.children == []
           redirect_to new_optimized_category_path, notice: "Create a new category under #{@root_category.classification}"
         end
@@ -57,6 +58,7 @@ module GuiderCms
         end
         @articles = Article.where(id: @articles_id).order(updated_at: :desc).page params[:page]
 
+        @keyword = "Latest"
         # @articles = Article.all.order(created_at: :desc).page params[:page]
       end
     end

@@ -1,0 +1,44 @@
+<%
+  def draw_tree(node, selected_category_class, root_category)
+    node.children.each do |category|
+%>
+
+<% if category.articles != [] %>
+<% if category.classification == selected_category_class.classification %>
+<li><%= link_to "#{category.classification}", contents_path(root: root_category.slug || root_category.classification,  selected_category: category.slug || category.classification), class: "listing-active-links" %></li>
+<% else %>
+<li><%= link_to "#{category.classification}", contents_path(root: root_category.slug || root_category.classification, selected_category: category.slug || category.classification), class: "listing-links" %></li>
+
+<% end %>
+<% end %>
+<%
+          if category.children.any?
+%>
+              <ul style="list-style-type: none;"><% draw_tree(category, selected_category_class, root_category) %></ul>
+<%
+          end
+%>
+
+<%
+    end; nil
+  end
+%>
+
+
+<% if selected_category.nil? %>
+  <h6><%= link_to @keyword, content_new_back_path(root: root_category.slug || root_category.classification), class: "listing-active-links" %></h6>
+<% else %>
+  <h6><%= link_to @keyword, content_new_back_path(root: root_category.slug || root_category.classification), class: "listing-links" %></h6>
+<% end %>
+<% children_category.each do |category| %>
+  <% if (category.articles != []) || (category.articles == [] && current_user && is_guider_admin) %>
+    <% if category.classification == selected_category_class.classification %>
+      <h6><%= link_to "#{category.classification}", contents_path(root: root_category.slug || root_category.classification, selected_category: category.slug || category.classification ), class: "listing-active-links" %></h6>
+    <% else %>
+    <h6><%= link_to "#{category.classification}", contents_path(root: root_category.slug || root_category.classification, selected_category: category.slug || category.classification ), class: "listing-links" %></h6>
+    <% end %>
+    <% if category.children.any? %>
+        <ul style="list-style-type: none;"><%= draw_tree(category, selected_category_class, root_category) %></ul>
+    <% end %>
+  <% end %>
+<% end %>
