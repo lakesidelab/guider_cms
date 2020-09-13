@@ -102,6 +102,7 @@ module GuiderCms
           else
             @root_category = Category.find_by(classification: @root)
           end
+          @article.category = @root_category
 
         end
       else
