@@ -34,7 +34,7 @@
 
   <div class="form-group">
     <%= form.label :category_id %>
-    <%= form.select :category_id, options_for_select(category_options_array_for_article(nil, [], @root_category.id, 0), @article.id) , {required: true} ,class: "form-control" %>
+    <%= form.select :category_id, options_for_select(category_options_array_for_article(nil, [], @article.category_id, 0), @article.id) , {required: true} ,class: "form-control" %>
   </div>
   <p>If you are not finding relavant category, then you can <%= link_to "Create a category", new_optimized_category_path %></p>
   <p>If you don't want to put it in a specific category, then just select <%= @root %></p>
