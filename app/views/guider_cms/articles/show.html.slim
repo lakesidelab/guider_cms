@@ -1,0 +1,46 @@
+- title @article.title
+- meta_tag :description, @article.description
+- meta_tag :keywords, @article.keywords
+- if @article.header_image.attached?
+  = image_tag(main_app.url_for(@article.header_image), width: "100%")
+h1= @article.title
+= raw @article.body
+br/
+- if current_user && current_user.id == @article.author_id
+  - if @selected_category == @root
+    = link_to 'Edit', root_content_edit_path(root: @root)
+  - else
+    = link_to 'Edit', edit_content_path(@article.id, root: @root, selected_category: @selected_category)
+    | \
+- if current_user && current_user.id == @article.author_id
+  = link_to 'Delete', article_path(@article.id), method: :delete
+  | \
+- if request.original_url.include?('your_articles')
+  = link_to "Back", user_articles_path
+- else
+  - if @selected_category == @root
+    = link_to 'Back', content_new_back_path(root: @root)
+  - else
+    = link_to 'Back', contents_path(root: @root, selected_category: @selected_category)
+br/
+br/
+- if @selected_category_class.articles.length > 1
+  h3 Related contents
+  .row
+    .card-columns
+      - @selected_category_class.articles.each do |article|
+        - if article.id != @article.id
+          .card style=("margin-bottom: 2vh;") 
+            - if article.header_image.attached?
+              = image_tag(main_app.url_for(article.header_image), class: "card-img-top")
+            - else
+              - if article.body.embeds.find{|embeds| embeds.image?}
+                = image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), class: "card-img-top")
+            .card-body
+              h5.card-title= article.title
+              p.card-text
+                = article.description[0..500].gsub(/\s\w+$/,'...')
+              - if @selected_category_class.parent.nil?
+                = link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-primary"
+              - else
+                = link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-primary"

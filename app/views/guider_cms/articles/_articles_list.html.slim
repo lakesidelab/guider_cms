@@ -1,0 +1,126 @@
+- if @root_category.view_type.nil? || @root_category.view_type == "menu" || @root_category.view_type == "normal grid with menu"
+  .row
+    .col-sm-3.col-md-3  
+      - if @root_category.articles !=[] && @root_category.children != []
+        - if @selected_category.nil?
+          h6= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-active-links"
+        - else
+          h6= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-links"
+      - @children_category.each do |category|
+        - if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin)
+          - if category.classification == @selected_category_class.classification
+            h6= link_to "# category.classification ", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-active-links"
+          - else
+            h6= link_to "# category.classification ", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-links"
+          - if category.children.any?
+            ul style=("list-style-type: none;") = draw_tree(category)
+    .col-sm-9.col-md-9
+      - if @selected_category_class.articles == []
+        center
+          h2 No Content
+          - if @current_user && @is_guider_admin
+            h3 Click on New Content to create Content
+      - else
+        .row
+          .card-columns
+            = render 'articles', selected_category_class: @selected_category_class, root_category: @root_category
+- elsif @root_category.view_type == "grid" || @root_category.view_type == "full grid"
+  - if @selected_category_class.articles == []
+    br
+    br
+    center
+      h1 No content here
+  - else
+    - if @selected_category_class.articles != []
+      .row
+        .card-columns
+          - if @selected_category_class.children != []
+            - @selected_category_class.children.each do |category|
+              - if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin )
+                .card style=("margin-bottom: 2vh;") 
+                  = link_to contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification), class: "grid-link" do
+                    - if category.header_image.attached?
+                      = image_tag(main_app.url_for(category.header_image), class: "card-img-top")
+                    .card-body
+                      h4.card-title= category.classification
+          = render 'articles', selected_category_class: @selected_category_class, root_category: @root_category
+- elsif @root_category.view_type == "blog grid"
+  .row
+    .col-sm-3.col-md-3
+      = render 'blog_categories', articles: @articles, selected_category_class: @selected_category_class, root_category: @root_category, children_category: @children_category, current_user: @current_user, is_guider_admin: @is_guider_admin, selected_category: @selected_category, keyword: @keyword
+    .col-md-9.col-sm-9
+      - if @articles == []
+        br
+        br
+        center
+          h2 No Content
+      - else
+        .row
+          .card-columns
+            - if @selected_category_class.id == @root_category.id
+              = render 'latest', articles: @articles, selected_category_class: @selected_category_class, root_category: @root_category
+            - else
+              = render 'articles', selected_category_class: @selected_category_class, root_category: @root_category
+          - if @selected_category_class.id == @root_category.id
+            center
+              h5= paginate @articles
+- elsif @root_category.view_type == "blog list"
+  .row
+    .col-sm-3.col-md-3
+      = render 'blog_categories', articles: @articles, selected_category_class: @selected_category_class, root_category: @root_category, children_category: @children_category, current_user: @current_user, is_guider_admin: @is_guider_admin, selected_category: @selected_category
+    .col-md-9.col-sm-9
+      - if @articles == []
+        br
+        br
+        center
+          h2 No Content
+      - else
+        - if @selected_category_class.id == @root_category.id
+          = render 'list_latest', articles: @articles, selected_category_class: @selected_category_class, root_category: @root_category
+        - else
+          = render 'list_articles', selected_category_class: @selected_category_class, root_category: @root_category
+        - if @selected_category_class.id == @root_category.id
+          center
+            h5= paginate @articles
+- elsif @root_category.view_type == "ordered grid"
+  .row
+    .col-sm-3.col-md-3
+      - if @root_category.articles !=[] && @root_category.children != []
+        - if @selected_category.nil?
+          h6= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-active-links"
+        - else
+          h6= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-links"
+      - @children_category.each do |category|
+        - if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin)
+          - if category.classification == @selected_category_class.classification
+            h6= link_to "# category.classification ", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-active-links"
+          - else
+            h6= link_to "# category.classification ", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-links"
+          - if category.children.any?
+            ul style=("list-style-type: none;") = draw_tree(category)
+    .col-sm-9.col-md-9
+      = render 'ordered_grid', selected_category_class: @selected_category_class, root_category: @root_category, current_user: @current_user, is_guider_admin: @is_guider_admin
+- elsif @root_category.view_type == "ordered list"
+  .row
+    .col-sm-3.col-md-3
+      - if @root_category.articles !=[] && @root_category.children != []
+        - if @selected_category.nil?
+          h6= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-active-links"
+        - else
+          h6= link_to "Home", content_new_back_path(root: @root_category.slug || @root_category.classification), class: "listing-links"
+      - @children_category.each do |category|
+        - if (category.articles != []) || (category.articles == [] && @current_user && @is_guider_admin)
+          - if category.classification == @selected_category_class.classification
+            h6= link_to "# category.classification ", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-active-links"
+          - else
+            h6= link_to "# category.classification ", contents_path(root: @root_category.slug || @root_category.classification, selected_category: category.slug || category.classification ), class: "listing-links"
+          - if category.children.any?
+            ul style=("list-style-type: none;") = draw_tree(category)
+    .col-sm-9.col-md-9
+      - if @selected_category_class.articles == []
+        center
+          h2 No Content
+          - if @current_user && @is_guider_admin
+            h3 Click on New Content to create Content
+      - else
+        = render 'ordered_list', selected_category_class: @selected_category_class, root_category: @root_category, current_user: @current_user, is_guider_admin: @is_guider_admin

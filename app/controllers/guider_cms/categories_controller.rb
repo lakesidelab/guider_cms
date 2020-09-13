@@ -42,46 +42,22 @@ module GuiderCms
     end
 
     def create
-      if params[:category]["parent_id"] == "" || params[:category]["parent_id"].nil?
-        @category = Category.new(classification: params[:category]["classification"], is_root_category: true, view_type: params[:category]["view_type"] , header_image: params[:category]["header_image"])
-        if @category.save
-          redirect_to root_categories_path
-        else
-          render :new
-        end
-      else
-        category = Category.find(params[:category]["parent_id"])
-        category.children.create(classification: params[:category]["classification"], header_image: params[:category]["header_image"])
+      @category = Category.new(category_params)
+      if @category.save
         redirect_to root_categories_path
+      else
+        render :new
       end
     end
 
     def update
-      if params[:category]["parent_id"] == "" || params[:category]["parent_id"].nil?
-        if @category.update(classification: params[:category]["classification"], parent_id: nil, view_type: params[:category]["view_type"], header_image: params[:category]["header_image"], is_root_category: true)
+      if @category.update(category_params)
         # if @category.update(category_params)
           redirect_to root_categories_path
-        end
       else
-        parent_category = Category.find(params[:category]["parent_id"])
-        in_que_category = Category.find_by(classification: params[:category]["classification"])
-        in_que_category.parent_id = parent_category.id
-
-        if in_que_category.update(category_params)
-          redirect_to root_categories_path
-        else
           render :edit
-        end
       end
-      # if @category.update(category_params)
-      #   redirect_to root_categories_path
-      # else
-      #   render :edit
-      # end
     end
-
-
-
 
     def destroy
       if !!current_user && is_guider_admin

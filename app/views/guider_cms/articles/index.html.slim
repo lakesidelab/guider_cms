@@ -1,0 +1,19 @@
+- title @selected_category_class.classification || @root_category.classification
+- meta_tag :root, @root_category.classification
+- meta_tag :category, @selected_category_class.classification
+.row
+  - if @root_category.header_image.attached?
+    = image_tag(main_app.url_for(@root_category.header_image), width: "100%")
+  .col-md-6
+    h1= @root_category.classification
+  .col-md-6
+    .row
+      - if @current_user && @is_guider_admin
+        .col-md-3 style=("padding-top: 10px;") 
+          h6= link_to "New Content", new_content_path(root: @root), class: "listing-links"
+        .col-md-3 style=("padding-top: 10px;") 
+          h6= link_to "New Category", new_optimized_category_path, class: "listing-links"
+        .col-md-3 style=("padding-top: 10px;") 
+          h6= link_to "Show Cateories", root_categories_path, class: "listing-links"
+br
+== render 'articles_list'
