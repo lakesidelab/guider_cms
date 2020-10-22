@@ -1,0 +1,31 @@
+= form_with(model: category, local: true) do |form|
+  - if category.errors.any?
+    #error_explanation
+      h2
+        = pluralize(category.errors.count, "error")
+        | prohibited this category from being saved:
+      ul
+        - category.errors.full_messages.each do |message|
+          li= message
+  .form-group
+    h5= form.label :name
+    p The name of the category you want to create
+    = form.text_field :classification, class: "form-control", required: true
+  - if @root_categories != []
+    .form-group
+      h5= form.label :parent_id
+      p
+        | If you want your category to be a parent, then leave this empty, otherwise if you want it to
+        | be a child of a category you have already created then select the desired category
+      = form.select :parent_id, options_for_select(category_options_array(), @category.parent_id), {include_blank: true} ,class: "form-control"
+  .form-group
+    = form.label :header_image
+    = form.file_field :header_image
+  - if @category && @category.parent_id.nil?
+    .form-group
+      h5 View type
+      p Grid view type will have everything in a grid whereas menu will have categories listed on the left
+      b This input will only be considered, if the category being created does not have a parent
+      = form.select :view_type, @view_type, {selected: @category.view_type || "blog grid"}, class: "form-control"
+  .actions
+    = form.submit class: "btn btn-outline-primary"

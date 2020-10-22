@@ -45,12 +45,10 @@ end
 
 
  def category_options_array(current_id = nil,categories=[], parent_id=nil, depth=0)
-  # Category.where('parent_id = ? AND id != ?', parent_id, current_id ).order(:id).each do |category|
-  Category.where(parent_id: parent_id).order(:id).each do |category|
+    Category.where(parent_id: parent_id).order(:id).each do |category|
       categories << [subcat_prefix(depth) + category.classification, category.id]
       category_options_array(current_id,categories, category.id, depth+1)
   end
-
   categories
 end
 

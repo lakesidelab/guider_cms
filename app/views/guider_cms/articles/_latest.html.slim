@@ -1,0 +1,18 @@
+- articles.each do |article|
+  .card style=("margin-bottom: 2vh;")
+    - if article.header_image.attached?
+      = image_tag(main_app.url_for(article.header_image), class: "card-img-top")
+    - else
+      - if article.body.embeds.find{|embeds| embeds.image?}
+        = image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), class: "card-img-top")
+    .card-body
+      - if selected_category_class.parent.nil?
+        h4.card-title= link_to "# article.title ", root_articles_path(article, root: root_category.slug || root_category.classification), class: "grid-link"
+      - else
+        h4.card-title= link_to "# article.title ", content_path(article, root: root_category.slug || root_category.classification, selected_category: selected_category_class.slug  || selected_category_class.classification), class: "grid-link"
+      p.card-text
+        = article.description[0..300].gsub(/\s\w+$/,'...')
+      - if selected_category_class.parent.nil?
+        = link_to "Read Now", root_articles_path(article, root: root_category.slug || root_category.classification), class: "btn btn-outline-primary"
+      - else
+        = link_to "Read Now", content_path(article, root: root_category.slug || root_category.classification, selected_category: selected_category_class.slug  || selected_category_class.classification), class: "btn btn-outline-primary"

@@ -1,0 +1,33 @@
+- @selected_category_class.articles.order(position: :asc).each do |article|
+  .card style=("margin-bottom: 10px;")
+    .row.no-gutters
+      .col-md-6
+        - if article.header_image.attached?
+          = image_tag(main_app.url_for(article.header_image), style: "height:100%;width:100%;")
+        - else
+          - if article.body.embeds.find{|embeds| embeds.image?}
+            = image_tag(main_app.url_for(article.body.embeds.find{|embeds| embeds.image?}), style: "height:100%;width:100%;")
+      .col-md-6
+        .card-body
+          - if @selected_category_class.parent.nil?
+            h4.card-title= link_to "# article.title ", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "grid-link"
+          - else
+            h4.card-title= link_to "# article.title ", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "grid-link"
+          p.card-text= article.description
+          - if @selected_category_class.parent.nil?
+            = link_to "Read Now", root_articles_path(article, root: @root_category.slug || @root_category.classification), class: "btn btn-outline-primary"
+          - else
+            = link_to "Read Now", content_path(article, root: @root_category.slug || @root_category.classification, selected_category: @selected_category_class.slug  || @selected_category_class.classification), class: "btn btn-outline-primary"
+          - if @current_user && @is_guider_admin
+            - if @selected_category_class.id == @root_category.id
+              = link_to move_article_backward_path(article, root: @root_category.slug) do
+                = image_tag("guider_cms/up.png", height: "25")
+            - else
+              = link_to move_article_backward_path(article, root: @root_category.slug, selected_category: @selected_category_class.slug) do
+                = image_tag("guider_cms/up.png", height: "25")
+            - if @selected_category_class.id == @root_category.id
+              = link_to move_article_forward_path(article, root: @root_category.slug) do
+                = image_tag("guider_cms/down.png", height: "25")
+            - else
+              = link_to move_article_forward_path(article, root: @root_category.slug, selected_category: @selected_category_class.slug) do
+                = image_tag("guider_cms/down.png", height: "25")

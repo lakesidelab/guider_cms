@@ -1,0 +1,3 @@
+h1 Editing Article
+= render 'form', article: @article
+= link_to 'Back', contents_path(root: @root, selected_category: @article.category.classification)

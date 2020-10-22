@@ -1,0 +1,4 @@
+div
+  = render 'form', category: @category
+  - if !(@root.nil?)
+    = link_to "Back", content_new_back_path(root: @root.slug || @root.classification)
